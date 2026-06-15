@@ -1,0 +1,58 @@
+name: Build BIM AI Engine
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install fastapi uvicorn ezdxf numpy pandas streamlit requests python-dotenv
+
+      - name: Build Windows exe
+        run: |
+          pyinstaller --onefile --windowed --name "BIM_AI_Engine" src/app_ui.py
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v3
+        with:
+          name: BIM_AI_Engine_Windows
+          path: dist/BIM_AI_Engine.exe
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller
+          pip install fastapi uvicorn ezdxf numpy pandas streamlit requests python-dotenv
+
+      - name: Build Mac app
+        run: |
+          pyinstaller --onefile --windowed --name "BIM_AI_Engine" src/app_ui.py
+
+      - name: Upload Mac build
+        uses: actions/upload-artifact@v3
+        with:
+          name: BIM_AI_Engine_Mac
+          path: dist/BIM_AI_Engine
